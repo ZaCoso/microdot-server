@@ -12,6 +12,30 @@
     </header>
     <main>
         <h1 style="text-align: center;">{{Mensaje}}</h1>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 24px; margin-top: 32px;">
+            <div style="display: flex; gap: 16px;">
+                <button>led 1</button>
+                <button>led 2</button>
+                <button>led 3</button>
+            </div>
+            <div style="margin-top: 40px; width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; gap: 32px;">
+                <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <h3 style='color: #d32f2f; margin-bottom: 8px;'>ROJO</h3>
+                    <input type="range" min="0" max="255" value="0" id="slider-rojo" style="width: 100%; accent-color: #d32f2f;" oninput="document.getElementById('valor-rojo').textContent = this.value">
+                    <span id="valor-rojo">0</span>
+                </div>
+                <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <h3 style='color: #388e3c; margin-bottom: 8px;'>VERDE</h3>
+                    <input type="range" min="0" max="255" value="0" id="slider-verde" style="width: 100%; accent-color: #388e3c;" oninput="document.getElementById('valor-verde').textContent = this.value">
+                    <span id="valor-verde">0</span>
+                </div>
+                <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <h3 style='color: #1976d2; margin-bottom: 8px;'>AZUL</h3>
+                    <input type="range" min="0" max="255" value="0" id="slider-azul" style="width: 100%; accent-color: #1976d2;" oninput="document.getElementById('valor-azul').textContent = this.value">
+                    <span id="valor-azul">0</span>
+                </div>
+            </div>
+        </div>
     </main>
     <footer>
         <p>Representación Frontal y Visual de Datos</p>

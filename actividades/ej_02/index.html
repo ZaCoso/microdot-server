@@ -3,22 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actividad #</title>
+    <title>Actividad</title>
     <link rel="stylesheet" href="styles/base.css">
+    <style>
+        .led-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .led-button.on {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .led-button.off {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Actividad #</h1>
+        <h1>Actividad {{#}}</h1>
     </header>
     <main>
+        <h1 style="text-align: center;">{{Mensaje}}</h1>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 16px; margin-top: 32px;">
+            <div style="display: flex; gap: 16px;">
+                <button id="led1" class="led-button off" onclick="toggleLed(1)">LED 1</button>
+                <button id="led2" class="led-button off" onclick="toggleLed(2)">LED 2</button>
+                <button id="led3" class="led-button off" onclick="toggleLed(3)">LED 3</button>
+            </div>
+            <div style="margin-top: 40px; width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <span style="font-weight: bold; margin-bottom: 8px;">LED WS2818B</span>
+                <input type="range" min="0" max="255" value="128" style="width: 300px;">
+            </div>
+        </div>
     </main>
     <footer>
         <p>Representación Frontal y Visual de Datos</p>
         <p>Computadoras de Aeronaves</p>
-        <p>Alumno XX</p>
+        <p>{{Alumno}}</p>
         <p>Prof. Carlassara Fabrizio</p>
         <p id="fecha"></p>
     </footer>
     <script src="scripts/base.js"></script>
+    <script>
+        async function toggleLed(ledNum) {
+            const button = document.getElementById(`led${ledNum}`);
+            const response = await fetch(`/led/${ledNum}/toggle`);
+            
+            if (response.ok) {
+                const isOn = await response.text() === 'True';
+                button.classList.toggle('on', isOn);
+                button.classList.toggle('off', !isOn);
+            }
+        }
+    </script>
 </body>
 </html>
