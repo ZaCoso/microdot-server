@@ -55,3 +55,14 @@ button:hover, button:focus {
     box-shadow: 0 8px 24px rgba(23, 111, 199, 0.25);
     outline: none;
 }
+
+.rgb-value {
+    width: 60px;
+    padding: 2.5px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+}
+
+
