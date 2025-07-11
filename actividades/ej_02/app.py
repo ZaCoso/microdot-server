@@ -22,7 +22,7 @@ led3.value(0)
 # Configuración de NeoPixels
 np = NeoPixel(Pin(27), 4)  
 for i in range(4):
-    np[i] = (255, 255, 255)  # Inicializar en blanco
+    np[i] = (0, 0, 0)  # Color con el que empieza
 np.write()
 
 # Función WIFI

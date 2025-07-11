@@ -4,6 +4,9 @@ from time import sleep
 from machine import Pin, SoftI2C
 import ssd1306
 from neopixel import NeoPixel
+import ds18x20
+import onewire
+import time
 
 # Configuración I2C para OLED
 i2c = SoftI2C(sda=Pin(21), scl=Pin(22))
@@ -22,8 +25,14 @@ led3.value(0)
 # Configuración de NeoPixels
 np = NeoPixel(Pin(27), 4)  
 for i in range(4):
-    np[i] = (255, 255, 255)  # Inicializar en blanco
+    np[i] = (0, 0, 0)  # Color con el que empieza
 np.write()
+
+# Configuración de temperatura y buzzer
+buzzer_pin = Pin(14, Pin.OUT)
+ds_pin = Pin(19)
+ds_sensor = ds18x20.DS18X20(onewire.OneWire(ds_pin))
+temperatureCelsius = 24
 
 # Función WIFI
 def connect_wifi(ssid, password):
@@ -42,6 +51,7 @@ def connect_wifi(ssid, password):
 WIFI_SSID = "Cooperadora Alumnos"
 WIFI_PASSWORD = ""
 
+#Texto del display
 try:
     ip = connect_wifi(WIFI_SSID, WIFI_PASSWORD)
     oled.fill(0)
@@ -54,6 +64,8 @@ except Exception as e:
 app = Microdot()
 Response.default_content_type = 'text/html'
 
+
+#Abrir Pagina web
 @app.route('/')
 def index(request):
     with open('index.html', 'r') as file:
@@ -61,7 +73,7 @@ def index(request):
     
     variables = {
         '{{#}}': "Actividad 1 - Microdot",
-        '{{Mensaje}}': "Control de LEDs",
+        '{{Mensaje}}': "Control de LEDs y Temperatura",
         '{{Alumno}}': "Santiago Zacarias"
     }
     
@@ -80,6 +92,8 @@ def serve_js(request):
     with open('scripts/base.js', 'r') as f:
         return f.read(), 200, {'Content-Type': 'application/javascript'}
 
+
+#Encender Leds
 @app.route('/led/<led_num>/toggle')
 def toggle_led(request, led_num):
     try:
@@ -98,6 +112,8 @@ def toggle_led(request, led_num):
     except Exception as e:
         return f"Error: {str(e)}", 500
 
+
+#Tira de leds
 @app.route('/neopixel/<r>/<g>/<b>')
 def set_neopixel(request, r, g, b):
     try:
@@ -105,7 +121,6 @@ def set_neopixel(request, r, g, b):
         g = max(0, min(255, int(g)))
         b = max(0, min(255, int(b)))
         
-        # Aplicar a todos los LEDs
         for i in range(4):
             np[i] = (r, g, b)
         np.write()
@@ -114,4 +129,30 @@ def set_neopixel(request, r, g, b):
     except Exception as e:
         return f"Error: {str(e)}", 500
 
+
+#Sensor de temperatura
+@app.route('/sensors/ds18b20/read')
+async def temperature_measuring(request):
+    global ds_sensor
+    ds_sensor.convert_temp()
+    time.sleep_ms(1)
+    roms = ds_sensor.scan()
+    for rom in roms:
+        temperatureCelsius = ds_sensor.read_temp(rom)
+    
+    return {'temperature': temperatureCelsius}
+
+
+#Setpoint
+@app.route('/setpoint/set/<int:value>')
+async def setpoint_calculation(request, value):
+    if value >= temperatureCelsius:
+        buzzer_pin.on()
+        return {'buzzer': 'On'}
+    else:
+        buzzer_pin.off()
+        return {'buzzer': 'Off'}
+
+
+#FIN
 app.run(host=ip, port=80, debug=True)

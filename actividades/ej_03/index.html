@@ -5,38 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Actividad</title>
     <link rel="stylesheet" href="styles/base.css">
-    <style>
-        .led-button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .led-button.on {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .led-button.off {
-            background-color: #f44336;
-            color: white;
-        }
-        .rgb-control {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            margin-top: 20px;
-        }
-        .rgb-value {
-            font-size: 24px;
-            font-weight: bold;
-            min-width: 50px;
-            text-align: center;
-            display: inline-block;
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -68,43 +36,31 @@
                     Aplicar a NeoPixels
                 </button>
             </div>
+
+            <div class="container">
+                <h1>Control de Temperatura</h1>
+                
+                <div id="temperature-display">
+                    Temperatura: <span id="temperature-value">--</span> °C
+                </div>
+        
+                <label for="setpoint-slider">Setpoint:</label>
+                <input type="range" id="setpoint-slider" min="0" max="100" value="25" oninput="updateSetpointValue(this.value)">
+                <span id="setpoint-value">--</span> °C
+                
+                <div id="buzzer-status">
+                    Buzzer: <span id="buzzer-state">--</span>
+                </div>
+            </div>
         </div>
     </main>
     <footer>
         <p>Representación Frontal y Visual de Datos</p>
         <p>Computadoras de Aeronaves</p>
-        <p>{{Alumno}}</p>
+        <p>Alumno:{{Alumno}}</p>
         <p>Prof. Carlassara Fabrizio</p>
         <p id="fecha"></p>
     </footer>
     <script src="scripts/base.js"></script>
-    <script>
-        async function toggleLed(ledNum) {
-            const button = document.getElementById(`led${ledNum}`);
-            const response = await fetch(`/led/${ledNum}/toggle`);
-            
-            if (response.ok) {
-                const isOn = await response.text() === 'True';
-                button.classList.toggle('on', isOn);
-                button.classList.toggle('off', !isOn);
-            }
-        }
-
-        async function sendRgbValues() {
-    try {
-        const r = document.getElementById('redValue').value;
-        const g = document.getElementById('greenValue').value;
-        const b = document.getElementById('blueValue').value;
-        
-        const response = await fetch(`/neopixel/${r}/${g}/${b}`);
-        if (!response.ok) {
-            throw new Error('Error en la respuesta del servidor');
-        }
-        alert('Color aplicado correctamente!');
-    } catch (error) {
-        alert('Error al aplicar el color: ' + error.message);
-    }
-}
-    </script>
 </body>
 </html>
